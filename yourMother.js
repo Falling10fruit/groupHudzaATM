@@ -26,15 +26,6 @@ rl.on("close", () => {
 });
 
 rl.on('history', (history) => {
-    if (history[0] == "help") {
-        console.log(`
-List of global commands:
-help | returns this screen
-0    | returns to the system access. If current page is system access, logs out to welcome page
-back | returns to previous screen
-`)
-    }
-
     if (history[0] == "debug") {
         console.log(history);
     }
@@ -52,11 +43,6 @@ back | returns to previous screen
     }
 
     if (history[0] == "back") {
-        if (history[1] == "help") {
-            updateScene();
-            return
-        }
-
         if (history.length < 2) {
             scene = "welcome";
             updateScene();
@@ -65,6 +51,10 @@ back | returns to previous screen
 
         scene = history[history.length -2];
     }
+
+    if (history[0] == "hist") {
+        console.log(hist, "\n");
+    }
 });
 
 updateScene();
@@ -72,9 +62,20 @@ updateScene();
 async function updateScene () {
     history.push(scene);
 
-    if (scene == "welcome") {
-        welcomeScene();
+    switch (scene) {
+        case "help":
+            helpScene 
     }
+}
+
+async function helpScene () {
+    console.log(`
+List of global commands:
+help | returns this screen
+0    | returns to the system access. If current page is system access, logs out to welcome page
+back | returns to previous screen
+hist | returns a list of previous screens
+`);
 }
 
 async function welcomeScene () {
@@ -87,4 +88,10 @@ Lose lipid today by ` + tips[Math.floor(Math.random()*tips.length)] + `
 2 to create account
 3 for credits
 `);
+
+
+}
+
+async function loginScene () {
+
 }
