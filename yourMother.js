@@ -16,9 +16,15 @@ const rl = readLinusTechTips.Interface(process.stdin, process.stdout);
 
 const prompt = (query) => new Promise((resolve) => { rl.question(query, resolve)});
 
-let currentUser = "loggedout";
+let currentUser = {
+    accountID: "loggedout",
+    PIN: undefined
+};
 let sceneHistory = ["welcome"];
 let scene = "welcome";
+let database = {};
+
+fs.appendFile("egorock.json", )
 
 rl.on("close", () => {
     console.log("\nSee ya bak coy");
@@ -28,6 +34,11 @@ rl.on("close", () => {
 rl.on('history', (history) => {
     if (history[0] == "debug") {
         console.log(history);
+    }
+
+    if (history[0] == "") {
+        console.log("\ninvalid input")
+        updateScene();
     }
 
     if (history[0] == "0") {
@@ -57,14 +68,26 @@ rl.on('history', (history) => {
     }
 });
 
-updateScene();
-
 async function updateScene () {
     history.push(scene);
 
     switch (scene) {
         case "help":
-            helpScene 
+            helpScene();
+            break;
+        case "welcome":
+            welcomeScene();
+            break;
+        case "login":
+            loginScene();
+            break;
+        default:
+            if (currentUser.PIN == undefined) {
+                scene = "welcome";
+                welcomeScene();
+            } else {
+                mainmenuScene();
+            }
     }
 }
 
@@ -89,9 +112,39 @@ Lose lipid today by ` + tips[Math.floor(Math.random()*tips.length)] + `
 3 for credits
 `);
 
+    switch (input) { // "0" cases are handled by rl.on("history")
+        case "1":
+            scene = "login";
+            updateScene();
+            break;
+        case "2":
+            scene = "createaccount"
+            updateScene();
+            break;
+        case "3":
+            scene = "credits"
 
+    }
 }
 
 async function loginScene () {
+    console.log("\nWelcome back my little boy hehe");
+    scene = "attemptaccountnumber";
+    updateScene();
+}
+
+async function attemptaccountnumberScene () {
+    const accountnumber = await prompt("\nWhat is your account number: ");
+
+    if (database[accountnumber] == undefined) {
+
+    }
+}
+
+async function createaccountScene () {
+
+}
+
+async function mainmenuScene () {
 
 }
