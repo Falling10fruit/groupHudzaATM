@@ -24,21 +24,32 @@ let sceneHistory = ["welcome"];
 let scene = "welcome";
 let database = {};
 
-fs.appendFile("egorock.json", )
+if (fs.existsSync("basedBas.json")) {
+    fs.readFile("basedBase.json", "utf-8", (error, data) => {
+        if (error) console.error(error);
+    
+        database = JSON.parse(data);
+    });
+}
+
+updateScene();
 
 rl.on("close", () => {
+    fs.writeFileSync("basedBase.json", JSON.stringify(database));
     console.log("\nSee ya bak coy");
     process.exit(0);
 });
 
+rl.on("line", updateScene);
+
 rl.on('history', (history) => {
+    console.log("\nrecieved input: " + history[0]);
     if (history[0] == "debug") {
-        console.log(history);
+        scene = "debug";
     }
 
-    if (history[0] == "") {
-        console.log("\ninvalid input")
-        updateScene();
+    if (history[0] == "help") {
+        scene = "help";
     }
 
     if (history[0] == "0") {
@@ -46,40 +57,50 @@ rl.on('history', (history) => {
             rl.close();
         } else if (currentUser == "loggedout") {
             scene = "welcome";
-            updateScene();
+        
         } else {
-            scene = "systemaccess";
-            updateScene();
+            scene = "mainmenu";
         }
     }
 
     if (history[0] == "back") {
-        if (history.length < 2) {
+        if (sceneHistory.length < 2) {
             scene = "welcome";
-            updateScene();
+        
             return
         }
 
-        scene = history[history.length -2];
+        scene = sceneHistory[sceneHistory.length -2];
     }
 
-    if (history[0] == "hist") {
-        console.log(hist, "\n");
+    if (history[0] == "1") {
+        scene = "login"
     }
 });
 
 async function updateScene () {
-    history.push(scene);
+    console.log("\nredirecting to scene " + scene);
+
+    sceneHistory.push(scene);
 
     switch (scene) {
         case "help":
             helpScene();
+            break;
+        case "debug":
+            debugScene();
             break;
         case "welcome":
             welcomeScene();
             break;
         case "login":
             loginScene();
+            break;
+        case "createaccount":
+            createaccountScene();
+            break;
+        case "attemptaccountnumber":
+            attemptaccountnumberScene();
             break;
         default:
             if (currentUser.PIN == undefined) {
@@ -101,6 +122,11 @@ hist | returns a list of previous screens
 `);
 }
 
+async function debugScene () {
+    console.log(`\nsceneHistory: `, sceneHistory);
+    console.log("\nhistory: ", history);
+}
+
 async function welcomeScene () {
     const input = await prompt(`
 Yo chigga, what can we do for you today?
@@ -115,15 +141,13 @@ Lose lipid today by ` + tips[Math.floor(Math.random()*tips.length)] + `
     switch (input) { // "0" cases are handled by rl.on("history")
         case "1":
             scene = "login";
-            updateScene();
             break;
         case "2":
             scene = "createaccount"
-            updateScene();
             break;
         case "3":
             scene = "credits"
-
+            break;
     }
 }
 
