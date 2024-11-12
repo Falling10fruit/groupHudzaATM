@@ -23,6 +23,7 @@ let currentUser = {
 let sceneHistory = ["welcome"];
 let scene = "welcome";
 let database = {};
+let currentHistory = [];
 
 if (fs.existsSync("basedBas.json")) {
     fs.readFile("basedBase.json", "utf-8", (error, data) => {
@@ -43,40 +44,41 @@ rl.on("close", () => {
 rl.on("line", updateScene);
 
 rl.on('history', (history) => {
-    console.log("\nrecieved input: " + history[0]);
-    if (history[0] == "debug") {
+    currentHistory = history.slice;
+    otherCases(history[0]);
+});
+
+async function otherCases(input) {
+    if (input == "debug") {
+        console.log("\nhistory: ", history);
         scene = "debug";
     }
 
-    if (history[0] == "help") {
+    if (input == "help") {
         scene = "help";
     }
 
-    if (history[0] == "0") {
+    if (input == "0") {
         if (scene == "welcome") {
             rl.close();
         } else if (currentUser == "loggedout") {
             scene = "welcome";
-        
+
         } else {
             scene = "mainmenu";
         }
     }
 
-    if (history[0] == "back") {
+    if (input == "back") {
         if (sceneHistory.length < 2) {
             scene = "welcome";
-        
+
             return
         }
 
         scene = sceneHistory[sceneHistory.length -2];
     }
-
-    if (history[0] == "1") {
-        scene = "login"
-    }
-});
+}
 
 async function updateScene () {
     console.log("\nredirecting to scene " + scene);
@@ -124,7 +126,6 @@ hist | returns a list of previous screens
 
 async function debugScene () {
     console.log(`\nsceneHistory: `, sceneHistory);
-    console.log("\nhistory: ", history);
 }
 
 async function welcomeScene () {
@@ -138,7 +139,7 @@ Lose lipid today by ` + tips[Math.floor(Math.random()*tips.length)] + `
 3 for credits
 `);
 
-    switch (input) { // "0" cases are handled by rl.on("history")
+    switch (input) { // "0" cases are handled by otherCases
         case "1":
             scene = "login";
             break;
@@ -148,7 +149,11 @@ Lose lipid today by ` + tips[Math.floor(Math.random()*tips.length)] + `
         case "3":
             scene = "credits"
             break;
+        default:
+            otherCases();
     }
+
+    updateScene(); // eyo switch cases are sync
 }
 
 async function loginScene () {
