@@ -22,7 +22,12 @@ let currentUser = {
 };
 let sceneHistory = ["welcome"];
 let scene = "welcome";
-let database = {};
+let database = {
+    placeholder: {
+        PIN: 6969,
+        balance: 420
+    }
+};
 let currentHistory = [];
 
 if (fs.existsSync("basedBas.json")) {
@@ -98,11 +103,13 @@ async function updateScene () {
         case "login":
             loginScene();
             break;
-        case "createaccount":
-            createaccountScene();
-            break;
         case "attemptaccountnumber":
             attemptaccountnumberScene();
+            break;
+        case "attemptaccountpin":
+            attemptaccountpinScene()
+        case "createaccount":
+            createaccountScene();
             break;
         default:
             if (currentUser.PIN == undefined) {
@@ -163,17 +170,70 @@ async function loginScene () {
 }
 
 async function attemptaccountnumberScene () {
-    const accountnumber = await prompt("\nWhat is your account number: ");
+    const inputaccountnumber = await prompt("\nWhat is your account number: ");
 
-    if (database[accountnumber] == undefined) {
-
+    if (database["account" + inputaccountnumber] == undefined) {
+        console.log("\nAccount not found (input help for global commands)")
+    } else {
+        currentUser.accountID = "account" + inputaccountnumber;
+        scene = "attemptaccountpin";
     }
+
+    updateScene();
+}
+
+async function attemptaccountpinScene () {
+    const inputaccountpin = await prompt("\nInput account PIN: ");
+
+    if (database[currentUser.accountID].PIN == inputaccountpin) {
+        currentUser.PIN = inputaccountpin;
+        scene = "mainmenu";
+    } else {
+        console.log("\nRecieved PIN is incorrect");
+    }
+
+    updateScene();
 }
 
 async function createaccountScene () {
+    const inputaccountpin = await prompt(`
+Welcome to the A(nguish)T(o)M(ortals)!
+What is your PIN? `);
 
+    if (inputaccountpin.length != 4) {
+        console.log("\nPIN must be four numbers long");
+    } else if (parseInt(inputaccountpin) != inputaccountpin) {
+        console.log("\PIN must be an integer");
+    } else {
+        const accountnumber = Math.floor(Math.random()*5);
+
+        database["account" + accountnumber] = {
+            PIN: inputaccountpin,
+            balance: 0
+        };
+
+        scene = "mainmenu";
+    }
+
+    updateScene();
 }
 
 async function mainmenuScene () {
+    const input = await prompt(`
+Welcome home master...
+What would you like to do today?~
 
+0 | the fuck nigga im out
+1 | Check balance
+2 | Deposit
+3 | Withdraw
+4 | Change PIN
+`);
+
+    switch (input) {
+        case "1":
+            scene = "balance";
+            break;
+        case "2":
+    }
 }
