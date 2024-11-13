@@ -55,7 +55,6 @@ rl.on('history', (history) => {
 
 async function otherCases(input) {
     if (input == "debug") {
-        console.log("\nhistory: ", history);
         scene = "debug";
         return
     }
@@ -68,9 +67,8 @@ async function otherCases(input) {
     if (input == "0") {
         if (scene == "welcome") {
             rl.close();
-        } else if (currentUser.accountID == "loggedout") {
+        } else if (currentUser.PIN == undefined) {
             scene = "welcome";
-
         } else if (scene == "mainmenu") {
             scene = "welcome";
             currentUser.accountID = "loggedout";
@@ -89,6 +87,7 @@ async function otherCases(input) {
         }
 
         scene = sceneHistory[sceneHistory.length -2];
+        sceneHistory = sceneHistory.slice(0, sceneHistory.length - 2);
         return
     }
 }
@@ -155,7 +154,10 @@ hist | returns a list of previous screens
 }
 
 async function debugScene () {
-    console.log(`\nsceneHistory: `, sceneHistory);
+    console.info("\nhistory: ", currentHistory);
+    console.info(`\nsceneHistory: `, sceneHistory);
+    console.info("\ndatabase: ", database);
+    console.info("\ncurrentUser: ", currentUser);
 }
 
 async function welcomeScene () {
@@ -225,10 +227,10 @@ What is your PIN? `);
 
     if (inputaccountpin.length != 4) {
         console.log("\nPIN must be four numbers long");
-    } else if (parseInt(inputaccountpin) != inputaccountpin) {
-        console.log("\PIN must be an integer");
+    } else if (parseInt(inputaccountpin) != inputaccountpin || inputaccountpin < 0) {
+        console.log("\nPIN must be a positive integer");
     } else {
-        const accountnumber = Math.floor(Math.random()*5);
+        const accountnumber = ("" + Math.floor(Math.random()*10**5)).padStart(5, "0");
 
         database["account" + accountnumber] = {
             PIN: inputaccountpin,
@@ -283,7 +285,7 @@ async function depositScene () {
     const depositamount = await prompt("\nHow much would you like to deposit: ");
 
     
-    if (parseFloat(depositamount) == depositamount) {
+    if (parseFloat(depositamount) == depositamount && depositamount >= "0") {
         database[currentUser.accountID].balance += parseFloat(depositamount);
 
         console.log("\nSuccessfully deposited " + depositamount + " " + currency + " into your account");
@@ -299,7 +301,7 @@ async function withdrawScene () {
     const withdrawamount = await prompt("\nHow much do you plan to withdraw: ");
 
     
-    if (parseFloat(withdrawamount) == withdrawamount) {
+    if (parseFloat(withdrawamount) == withdrawamount && withdrawamount >= 0) {
         database[currentUser.accountID].balance -= parseFloat(withdrawamount);
 
         console.log("\nSuccessfully withdrawed " + withdrawamount + " " + currency + " from your account");
@@ -332,7 +334,6 @@ Kenrick  | Professional Doctor
 Hudza    | King of Africa
 Irham    | World Eater
 Kevin    | Professional Driver
-Budiyoga | fuck all
 
 Input 0 to return`);
 }
