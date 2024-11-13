@@ -30,8 +30,8 @@ let database = {
 };
 let currentHistory = [];
 
-if (fs.existsSync("basedBas.json")) {
-    fs.readFile("basedBase.json", "utf-8", (error, data) => {
+if (fs.existsSync("basedBas.txt")) {
+    fs.readFile("basedBas.txt", "utf-8", (error, data) => {
         if (error) console.error(error);
     
         database = JSON.parse(data);
@@ -41,7 +41,7 @@ if (fs.existsSync("basedBas.json")) {
 updateScene();
 
 rl.on("close", () => {
-    fs.writeFileSync("basedBase.json", JSON.stringify(database));
+    fs.writeFileSync("basedBas.txt", JSON.stringify(database));
     console.log("\nSee ya bak coy");
     process.exit(0);
 });
@@ -68,9 +68,13 @@ async function otherCases(input) {
     if (input == "0") {
         if (scene == "welcome") {
             rl.close();
-        } else if (currentUser == "loggedout") {
+        } else if (currentUser.accountID == "loggedout") {
             scene = "welcome";
 
+        } else if (scene == "mainmenu") {
+            scene = "welcome";
+            currentUser.accountID = "loggedout";
+            currentUser.PIN == undefined
         } else {
             scene = "mainmenu";
         }
@@ -87,13 +91,9 @@ async function otherCases(input) {
         scene = sceneHistory[sceneHistory.length -2];
         return
     }
-
-    console.info("\nInvalid input, input help to see a list of commands")
 }
 
 async function updateScene () {
-    console.log("\nredirecting to scene " + scene);
-
     sceneHistory.push(scene);
 
     switch (scene) {
@@ -117,6 +117,9 @@ async function updateScene () {
         case "createaccount":
             createaccountScene();
             break;
+        case "credits":
+            creditsScene();
+            break;
         case "mainmenu":
             mainmenuScene();
             break;
@@ -129,7 +132,7 @@ async function updateScene () {
             withdrawScene();
             break;
         case "changepin":
-            changepin();
+            changepinScene();
             break;
         default:
             if (currentUser.PIN == undefined) {
@@ -232,6 +235,7 @@ What is your PIN? `);
             balance: 0
         };
 
+        console.log("\nSuccess, your account number is " + accountnumber);
         scene = "mainmenu";
     }
 
@@ -307,7 +311,7 @@ async function withdrawScene () {
     updateScene();
 }
 
-async function changepin () {
+async function changepinScene () {
     const newpin = await prompt("\nInput your new PIN: ");
 
     if (parseInt(newpin) == newpin) {
@@ -320,4 +324,15 @@ async function changepin () {
     }
 
     updateScene();
+}
+
+async function creditsScene () {
+    console.log(`
+Kenrick  | Professional Doctor
+Hudza    | King of Africa
+Irham    | World Eater
+Kevin    | Professional Driver
+Budiyoga | fuck all
+
+Input 0 to return`);
 }
