@@ -9,7 +9,7 @@ const tips = [
     "staying hydrated",
     "staying away from the voices"
 ];
-
+const currency = "niggas";
 const fs = require("fs");
 const readLinusTechTips = require("readline");
 const rl = readLinusTechTips.Interface(process.stdin, process.stdout);
@@ -57,10 +57,12 @@ async function otherCases(input) {
     if (input == "debug") {
         console.log("\nhistory: ", history);
         scene = "debug";
+        return
     }
 
     if (input == "help") {
         scene = "help";
+        return
     }
 
     if (input == "0") {
@@ -72,6 +74,7 @@ async function otherCases(input) {
         } else {
             scene = "mainmenu";
         }
+        return
     }
 
     if (input == "back") {
@@ -82,7 +85,10 @@ async function otherCases(input) {
         }
 
         scene = sceneHistory[sceneHistory.length -2];
+        return
     }
+
+    console.info("\nInvalid input, input help to see a list of commands")
 }
 
 async function updateScene () {
@@ -110,6 +116,20 @@ async function updateScene () {
             attemptaccountpinScene()
         case "createaccount":
             createaccountScene();
+            break;
+        case "mainmenu":
+            mainmenuScene();
+            break;
+        case "balance":
+            balanceScene();
+            break;
+        case "deposit":
+            depositScene();
+        case "withdraw":
+            withdrawScene();
+            break;
+        case "changepin":
+            changepin();
             break;
         default:
             if (currentUser.PIN == undefined) {
@@ -250,6 +270,54 @@ What would you like to do today?~
     updateScene();
 }
 
-async function balance () {
-    console.log("\nYour current balance is: ")
+async function balanceScene () {
+    console.log("\nYour current balance is: " + database[currentUser.accountID].balance + " " + currency);
+    console.log("\nInput 0 to return");
+}
+
+async function depositScene () {
+    const depositamount = await prompt("\nHow much would you like to deposit: ");
+
+    
+    if (parseFloat(depositamount) == depositamount) {
+        database[currentUser.accountID].balance += parseFloat(depositamount);
+
+        console.log("\nSuccessfully deposited " + depositamount + " " + currency + " into your account");
+        scene = "mainmenu";
+    } else {
+        otherCases();
+    }
+
+    updateScene();
+}
+
+async function withdrawScene () {
+    const withdrawamount = await prompt("\nHow much do you plan to withdraw: ");
+
+    
+    if (parseFloat(withdrawamount) == withdrawamount) {
+        database[currentUser.accountID].balance -= parseFloat(withdrawamount);
+
+        console.log("\nSuccessfully withdrawed " + withdrawamount + " " + currency + " from your account");
+        scene = "mainmenu";
+    } else {
+        otherCases();
+    }
+
+    updateScene();
+}
+
+async function changepin () {
+    const newpin = await prompt("\nInput your new PIN: ");
+
+    if (parseInt(newpin) == newpin) {
+        database[currentUser.accountID].PIN = newpin;
+
+        console.log("\nSuccessfully set your PIN to " + newpin);
+        scene = "mainmenu";
+    } else {
+        otherCases();
+    }
+
+    updateScene();
 }
