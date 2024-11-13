@@ -157,7 +157,7 @@ Lose lipid today by ` + tips[Math.floor(Math.random()*tips.length)] + `
             scene = "credits"
             break;
         default:
-            otherCases();
+            otherCases(input);
     }
 
     updateScene(); // eyo switch cases are sync
@@ -235,5 +235,21 @@ What would you like to do today?~
             scene = "balance";
             break;
         case "2":
+            scene = "deposit";
+            break;
+        case "3":
+            scene = "withdraw";
+            break;
+        case "4":
+            scene = "changepin";
+            break;
+        default:
+            otherCases(input);
     }
+
+    updateScene();
+}
+
+async function balance () {
+    console.log("\nYour current balance is: ")
 }
