@@ -9,7 +9,7 @@ const tips = [
     "staying hydrated",
     "staying away from the voices"
 ];
-const currency = "niggas";
+const currency = "KKYHI";
 const fs = require("fs");
 const readLinusTechTips = require("readline");
 const rl = readLinusTechTips.Interface(process.stdin, process.stdout);
@@ -162,7 +162,7 @@ async function debugScene () {
 
 async function welcomeScene () {
     const input = await prompt(`
-Yo chigga, what can we do for you today?
+Yo nigga, what can we do for you today?
 Lose lipid today by ` + tips[Math.floor(Math.random()*tips.length)] + `
 
 0 to exit
@@ -249,7 +249,7 @@ async function mainmenuScene () {
 Welcome home master...
 What would you like to do today?~
 
-0 | the fuck nigga im out
+0 | Exit
 1 | Check balance
 2 | Deposit
 3 | Withdraw
