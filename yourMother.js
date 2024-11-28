@@ -310,7 +310,7 @@ async function withdrawScene () {
         console.log("\nSuccessfully withdrawed " + withdrawamount + " " + currency + " from your account");
         scene = "mainmenu";
     } else {
-        otherCases();
+        otherCases(withdrawScene);
     }
 
     updateScene();
@@ -325,7 +325,7 @@ async function changepinScene () {
         console.log("\nSuccessfully set your PIN to " + newpin);
         scene = "mainmenu";
     } else {
-        otherCases();
+        otherCases(newpin);
     }
 
     updateScene();
