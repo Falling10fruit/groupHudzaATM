@@ -237,11 +237,12 @@ What is your PIN? `);
             balance: 0
         };
 
+        currentUser.accountID = "account" + accountnumber;
+        currentUser.PIN = parseInt(inputaccountpin);
+
         console.log("\nSuccess, your account number is " + accountnumber);
         scene = "mainmenu";
     }
-
-    updateScene();
 }
 
 async function mainmenuScene () {
