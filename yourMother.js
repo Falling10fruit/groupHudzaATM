@@ -162,7 +162,7 @@ async function debugScene () {
 
 async function welcomeScene () {
     const input = await prompt(`
-Yo nigga, what can we do for you today?
+Yo chigga, what can we do for you today?
 Lose lipid today by ` + tips[Math.floor(Math.random()*tips.length)] + `
 
 0 to exit
