@@ -294,7 +294,7 @@ async function depositScene () {
         console.log("\nSuccessfully deposited " + depositamount + " " + currency + " into your account");
         scene = "mainmenu";
     } else {
-        otherCases();
+        otherCases(depositamount);
     }
 
     updateScene();
