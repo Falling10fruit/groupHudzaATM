@@ -319,7 +319,7 @@ async function withdrawScene () {
 async function changepinScene () {
     const newpin = await prompt("\nInput your new PIN: ");
 
-    if (parseInt(newpin) == newpin) {
+    if (parseInt(newpin) == newpin && newpin.length == 4) {
         database[currentUser.accountID].PIN = newpin;
 
         console.log("\nSuccessfully set your PIN to " + newpin);
