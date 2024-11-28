@@ -243,6 +243,8 @@ What is your PIN? `);
         console.log("\nSuccess, your account number is " + accountnumber);
         scene = "mainmenu";
     }
+
+    updateScene();
 }
 
 async function mainmenuScene () {
